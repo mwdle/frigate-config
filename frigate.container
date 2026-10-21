@@ -1,0 +1,50 @@
+[Container]
+Image=ghcr.io/blakeblackshear/frigate:0.18.0@sha256:9678a83a76e4730ac7d9ea7428370e32ae656d6b312aaad30d6c69f3fef14d35
+ContainerName=frigate
+
+Network=frigate.network
+Network=mqtt
+
+PublishPort=8555:8555
+PublishPort=8555:8555/udp
+
+Secret=mqtt_password,target=FRIGATE_MQTT_PASSWORD,mode=0400
+Secret=mqtt_username,target=FRIGATE_MQTT_USER,mode=0400
+
+AddDevice=/dev/dri/renderD128
+
+Volume=%h/containers/frigate/config:/config:U,Z
+Volume=%h/containers/frigate/media:/media/frigate:U,Z
+
+Tmpfs=/tmp/cache:noexec,nosuid,size=1G
+ShmSize=256M
+
+NoNewPrivileges=true
+DropCapability=all
+AddCapability=CHOWN
+AddCapability=FOWNER
+AddCapability=NET_RAW
+AddCapability=SETUID
+AddCapability=SETGID
+
+HealthStartupCmd=test -f /dev/shm/.frigate-is-stopping && exit 0; curl -fSs http://127.0.0.1:5000/api/version || exit 1
+HealthStartupInterval=5s
+HealthStartupTimeout=5s
+HealthCmd=test -f /dev/shm/.frigate-is-stopping && exit 0; curl -fSs http://127.0.0.1:5000/api/version || exit 1
+HealthInterval=30s
+HealthTimeout=5s
+HealthOnFailure=kill
+Notify=healthy
+
+Memory=2G
+PidsLimit=1024
+
+[Service]
+CPUQuota=100%
+Restart=always
+RestartSec=5s
+ExecStartPre=mkdir -p -m 0700 %h/containers/frigate/config
+ExecStartPre=mkdir -p -m 0700 %h/containers/frigate/media
+
+[Install]
+WantedBy=default.target
