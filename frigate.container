@@ -13,6 +13,8 @@ Secret=mqtt_username,target=FRIGATE_MQTT_USER,mode=0400
 
 AddDevice=/dev/dri/renderD128
 
+Timezone=local
+
 Volume=%h/containers/frigate/config:/config:U,Z
 Volume=%h/containers/frigate/media:/media/frigate:U,Z
 
