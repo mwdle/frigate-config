@@ -29,10 +29,9 @@ AddCapability=NET_RAW
 AddCapability=SETUID
 AddCapability=SETGID
 
-HealthStartupCmd=curl -fSs -o /dev/null http://127.0.0.1:5000/api/version || exit 1
+HealthCmd=curl -fSs -o /dev/null http://127.0.0.1:5000/api/version || exit 1
 HealthStartupInterval=5s
 HealthStartupTimeout=5s
-HealthCmd=curl -fSs -o /dev/null http://127.0.0.1:5000/api/version || exit 1
 HealthInterval=30s
 HealthTimeout=5s
 HealthOnFailure=kill
